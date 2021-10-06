@@ -71,6 +71,8 @@ contract MatchMaker {
         _random = codex_base_random(codexBaseRandomAddress);
     }
 
+    event rollInitiativeEvent(uint256[8] initiatives);
+
     function _createGame(
         uint256[] memory teamOne,
         uint256[] memory teamTwo,
@@ -91,65 +93,57 @@ contract MatchMaker {
         private
     {
         uint256 dex;
-        uint8[35] memory initiativeCounts = [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ];
-        uint8[8] memory initiatives = [0, 0, 0, 0, 0, 0, 0, 0];
+        uint256[8] memory initiatives;
         uint256 initiative;
+        uint256 initiativeCount;
         for (uint256 i = 0; i < teamOne.length; i++) {
             (, dex, , , , ) = rmAttributes.ability_scores(teamOne[i]);
             initiative = rmAttributes.calc(dex) + _random.d20(teamOne[i]) + 5;
-            initiativeCounts[initiative]++;
-            //initiatives[i] = initiative;
+            console.log("initiative is %s", initiative);
+            uint256 priority = 0;
+            for (uint256 j = 0; j < initiativeCount; j++) {
+                if (initiatives[j] < initiative) {
+                    cooldowns[teamOne[j]] = cooldowns[teamOne[j]] + 30;
+                } else {
+                    priority++;
+                }
+            }
 
+            cooldowns[teamOne[i]] = block.timestamp + 30 + 30 * priority;
+
+            initiatives[initiativeCount] = initiative;
+            initiativeCount++;
+        }
+
+        for (uint256 i = 0; i < teamTwo.length; i++) {
             (, dex, , , , ) = rmAttributes.ability_scores(teamTwo[i]);
-            initiativeCounts[
-                rmAttributes.calc(dex) + _random.d20(teamTwo[i]) + 5
-            ]++;
-        }
+            initiative = rmAttributes.calc(dex) + _random.d20(teamTwo[i]) + 5;
+            console.log("initiative is %s", initiative);
+            uint256 priority = 0;
+            for (uint256 j = 0; j < initiativeCount; j++) {
+                if (j <= teamOne.length) {
+                    if (initiatives[j] < initiative) {
+                        cooldowns[teamOne[j]] = cooldowns[teamOne[j]] + 30;
+                    } else {
+                        priority++;
+                    }
+                } else {
+                    if (initiatives[j] < initiative) {
+                        cooldowns[teamTwo[j / 2]] =
+                            cooldowns[teamTwo[j / 2]] +
+                            30;
+                    } else {
+                        priority++;
+                    }
+                }
+            }
 
-        uint256[] memory summonerIdsOrderedByInitiative;
-        for (uint256 i = 0; i < summonerIdsOrderedByInitiative.length; i++) {
-            cooldowns[summonerIdsOrderedByInitiative[i]] =
-                block.timestamp +
-                30 +
-                30 *
-                i;
+            cooldowns[teamTwo[i]] = block.timestamp + 30 + 30 * priority;
+
+            initiatives[initiativeCount] = initiative;
+            initiativeCount++;
         }
+        emit rollInitiativeEvent(initiatives);
     }
 
     function _startGame(
@@ -159,12 +153,11 @@ contract MatchMaker {
     ) external {
         require(teamOne.length > 0 && teamOne.length == teamTwo.length);
         require(gameId == keccak256(abi.encodePacked(teamOne, teamTwo)));
-        for (uint256 i = 0; i < teamTwo.length; i++) {
+        for (uint256 i = 0; i < teamTwo.length - 1; i++) {
             require(rm.ownerOf(teamTwo[i]) == msg.sender);
             require(cooldowns[teamTwo[i]] == 0 && cooldowns[teamOne[i]] == 0);
-            cooldowns[teamOne[i]] = block.timestamp + turn;
-            cooldowns[teamTwo[i]] = block.timestamp + turn;
         }
+        rollInitiative(teamOne, teamTwo);
     }
 }
 
@@ -360,7 +353,7 @@ contract League is MatchMaker {
         uint256[] memory teamOne,
         uint256[] memory teamTwo,
         uint8 mapId
-    ) external returns (bytes32 ) {
+    ) external returns (bytes32) {
         bytes32 res = _createGame(teamOne, teamTwo, mapId);
         emit createGameEvent(msg.sender, res, teamOne, teamTwo);
         return res;

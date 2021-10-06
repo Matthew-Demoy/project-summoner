@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 exports.__esModule = true;
-exports.Rarity__factory = void 0;
+exports.RarityGold__factory = void 0;
 var ethers_1 = require("ethers");
 var _abi = [
     {
@@ -14,7 +14,7 @@ var _abi = [
                 type: "uint256"
             },
         ],
-        name: "class",
+        name: "balanceOf",
         outputs: [
             {
                 internalType: "uint256",
@@ -29,104 +29,76 @@ var _abi = [
         inputs: [
             {
                 internalType: "uint256",
-                name: "",
+                name: "from",
+                type: "uint256"
+            },
+            {
+                internalType: "uint256",
+                name: "to",
+                type: "uint256"
+            },
+            {
+                internalType: "uint256",
+                name: "amount",
                 type: "uint256"
             },
         ],
-        name: "getApproved",
+        name: "transfer",
         outputs: [
             {
-                internalType: "address",
+                internalType: "bool",
                 name: "",
-                type: "address"
+                type: "bool"
             },
         ],
-        stateMutability: "view",
+        stateMutability: "nonpayable",
         type: "function"
     },
     {
         inputs: [
             {
                 internalType: "uint256",
-                name: "",
+                name: "executor",
+                type: "uint256"
+            },
+            {
+                internalType: "uint256",
+                name: "from",
+                type: "uint256"
+            },
+            {
+                internalType: "uint256",
+                name: "to",
+                type: "uint256"
+            },
+            {
+                internalType: "uint256",
+                name: "amount",
                 type: "uint256"
             },
         ],
-        name: "level",
+        name: "transferFrom",
         outputs: [
             {
-                internalType: "uint256",
+                internalType: "bool",
                 name: "",
-                type: "uint256"
+                type: "bool"
             },
         ],
-        stateMutability: "view",
-        type: "function"
-    },
-    {
-        inputs: [
-            {
-                internalType: "uint256",
-                name: "",
-                type: "uint256"
-            },
-        ],
-        name: "ownerOf",
-        outputs: [
-            {
-                internalType: "address",
-                name: "",
-                type: "address"
-            },
-        ],
-        stateMutability: "view",
-        type: "function"
-    },
-    {
-        inputs: [
-            {
-                internalType: "uint256",
-                name: "_summoner",
-                type: "uint256"
-            },
-        ],
-        name: "summoner",
-        outputs: [
-            {
-                internalType: "uint256",
-                name: "_xp",
-                type: "uint256"
-            },
-            {
-                internalType: "uint256",
-                name: "_log",
-                type: "uint256"
-            },
-            {
-                internalType: "uint256",
-                name: "_class",
-                type: "uint256"
-            },
-            {
-                internalType: "uint256",
-                name: "_level",
-                type: "uint256"
-            },
-        ],
-        stateMutability: "view",
+        stateMutability: "nonpayable",
         type: "function"
     },
 ];
-var Rarity__factory = /** @class */ (function () {
-    function Rarity__factory() {
+var RarityGold__factory = /** @class */ (function () {
+    function RarityGold__factory() {
     }
-    Rarity__factory.createInterface = function () {
+    RarityGold__factory.createInterface = function () {
         return new ethers_1.utils.Interface(_abi);
     };
-    Rarity__factory.connect = function (address, signerOrProvider) {
+    RarityGold__factory.connect = function (address, signerOrProvider) {
         return new ethers_1.Contract(address, _abi, signerOrProvider);
     };
-    Rarity__factory.abi = _abi;
-    return Rarity__factory;
+    RarityGold__factory.abi = _abi;
+    return RarityGold__factory;
 }());
-exports.Rarity__factory = Rarity__factory;
+exports.RarityGold__factory = RarityGold__factory;

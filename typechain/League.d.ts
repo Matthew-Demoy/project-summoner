@@ -92,9 +92,11 @@ interface LeagueInterface extends ethers.utils.Interface {
 
   events: {
     "createGameEvent(address,bytes32,uint256[],uint256[])": EventFragment;
+    "rollInitiativeEvent(uint256[8])": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "createGameEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "rollInitiativeEvent"): EventFragment;
 }
 
 export type createGameEventEvent = TypedEvent<
@@ -103,6 +105,32 @@ export type createGameEventEvent = TypedEvent<
     gameId: string;
     teamOne: BigNumber[];
     teamTwo: BigNumber[];
+  }
+>;
+
+export type rollInitiativeEventEvent = TypedEvent<
+  [
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ]
+  ] & {
+    initiatives: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
   }
 >;
 
@@ -328,6 +356,64 @@ export class League extends BaseContract {
         gameId: string;
         teamOne: BigNumber[];
         teamTwo: BigNumber[];
+      }
+    >;
+
+    "rollInitiativeEvent(uint256[8])"(
+      initiatives?: null
+    ): TypedEventFilter<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ]
+      ],
+      {
+        initiatives: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+      }
+    >;
+
+    rollInitiativeEvent(
+      initiatives?: null
+    ): TypedEventFilter<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ]
+      ],
+      {
+        initiatives: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
       }
     >;
   };

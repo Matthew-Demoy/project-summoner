@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
-
+import "hardhat/console.sol";
 interface rarity {
     function level(uint) external view returns (uint);
     function getApproved(uint) external view returns (address);
@@ -10,8 +10,11 @@ interface rarity {
 contract rarity_attributes {
 
     uint constant POINT_BUY = 32;
-    rarity constant rm = rarity(0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb);
+    rarity rm = rarity(0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb);
 
+    constructor(address rarityAddress){
+        rm = rarity(rarityAddress);
+    }
     struct ability_score {
         uint32 strength;
         uint32 dexterity;

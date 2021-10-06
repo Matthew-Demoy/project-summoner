@@ -64,8 +64,38 @@ interface MatchMakerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "rollInitiativeEvent(uint256[8])": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "rollInitiativeEvent"): EventFragment;
 }
+
+export type rollInitiativeEventEvent = TypedEvent<
+  [
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ]
+  ] & {
+    initiatives: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
+  }
+>;
 
 export class MatchMaker extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -195,7 +225,65 @@ export class MatchMaker extends BaseContract {
     rmAttributes(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    "rollInitiativeEvent(uint256[8])"(
+      initiatives?: null
+    ): TypedEventFilter<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ]
+      ],
+      {
+        initiatives: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+      }
+    >;
+
+    rollInitiativeEvent(
+      initiatives?: null
+    ): TypedEventFilter<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ]
+      ],
+      {
+        initiatives: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+      }
+    >;
+  };
 
   estimateGas: {
     _createGame(
