@@ -1,7 +1,7 @@
 /**
  *Submitted for verification at FtmScan.com on 2021-09-05
 */
-
+import "hardhat/console.sol";
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
@@ -89,12 +89,10 @@ contract ERC721 is IERC721 {
     function approve(address to, uint256 tokenId) public virtual override {
         address owner = ERC721.ownerOf(tokenId);
         require(to != owner, "ERC721: approval to current owner");
-
         require(
             msg.sender == owner || isApprovedForAll(owner, msg.sender),
             "ERC721: approve caller is not owner nor approved for all"
         );
-
         _approve(to, tokenId);
     }
 
