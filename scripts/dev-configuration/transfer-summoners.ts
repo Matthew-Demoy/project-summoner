@@ -1,8 +1,6 @@
-import { rarity } from "../abis/rarity";
 import { ethers, network } from "hardhat";
-import { League__factory, Rarity__factory } from "../typechain";
-import { deployedSummonerIds } from "../utils/summoners";
-import { addresses } from "../utils/addresses";
+import { deployedSummonerIds } from "../../utils/summoners";
+import { addresses } from "../../utils/addresses";
 
 if (network.name !== "localhost") {
   console.log("script should be ran locally only! \n Exiting now");
@@ -34,12 +32,14 @@ async function config() {
   const summonerHolder = await ethers.getSigner(
     "0x49e2510A8947fA90c291c25a432477Bd1C570349"
   );
-
-  const rarity = await RarityContractFactory.attach(
-    "0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb"
-  );
+  const rarity = await RarityContractFactory.attach(addresses.rarity);
 
   const rm = rarity.connect(summonerHolder);
+
+
+  console.log(deployedSummonerIds.slice(0, 4))
+  console.log(deployedSummonerIds.slice(4, 8))
+
 
   for await (const summoner of deployedSummonerIds.slice(0, 4)) {
     await rm.setApprovalForAll(user1Addr, true);
@@ -52,6 +52,7 @@ async function config() {
   }
 
   for await (const summoner of deployedSummonerIds.slice(5, 9)) {
+    
     await rm.approve(user2Addr, summoner);
     await rm.setApprovalForAll(user2Addr, true);
 
@@ -61,23 +62,8 @@ async function config() {
   }
 }
 
-const deployMatchmaker = async () => {
-  const [owner, addr1] = await ethers.getSigners();
-  const LeagueContractFactory = (await ethers.getContractFactory(
-    "contracts/Matchmaker.sol:League",
-    owner
-  )) as League__factory;
 
-  const league = await LeagueContractFactory.deploy(
-    addresses.rarity,
-    addresses.rarityAtributes,
-    addresses.random
-  );
-
-  console.log(league.address)
-};
-
-deployMatchmaker()
+config()
   .then(() => process.exit(0))
   .catch((error) => {
     console.error(error);
