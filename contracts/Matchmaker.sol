@@ -122,7 +122,7 @@ contract MatchMaker {
             console.log("initiative is %s", initiative);
             uint256 priority = 0;
             for (uint256 j = 0; j < initiativeCount; j++) {
-                if (j <= teamOne.length) {
+                if (j < teamOne.length) {
                     if (initiatives[j] < initiative) {
                         cooldowns[teamOne[j]] = cooldowns[teamOne[j]] + 30;
                     } else {
@@ -592,7 +592,7 @@ contract League is MatchMaker {
             TileType.NORMAL,
             TileType.NORMAL,
             TileType.NORMAL,
-            TileType.WALL,
+            TileType.NORMAL,
             TileType.NORMAL,
             TileType.NORMAL,
             TileType.NORMAL,
@@ -1294,16 +1294,15 @@ contract League is MatchMaker {
         ]
     ];
 
-    mapping(uint256 => position) private summonerPositions;
+    mapping(uint256 => position) public summonerPositions;
 
-    event createGameEvent(
-        address sender,
-        bytes32 gameId,
-        uint256[] teamOne,
-        uint256[] teamTwo
+    event createGameEvent(address indexed sender, bytes32 indexed gameId);
+
+    event startGameEvent(
+        address indexed sender,
+        bytes32 indexed gameId,
+        uint256 startTime
     );
-
-    event startGameEvent(address sender, bytes32 gameId, uint256 startTime);
 
     modifier validMove(
         position storage currentPosition,
@@ -1436,7 +1435,7 @@ contract League is MatchMaker {
         uint8 mapId
     ) external returns (bytes32) {
         bytes32 res = _createGame(teamOne, teamTwo, mapId);
-        emit createGameEvent(msg.sender, res, teamOne, teamTwo);
+        emit createGameEvent(msg.sender, res);
         return res;
     }
 
