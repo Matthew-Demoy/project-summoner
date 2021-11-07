@@ -10,7 +10,7 @@ if (network.name !== "localhost") {
 const deployMatchmaker = async () => {
   const [owner, addr1] = await ethers.getSigners();
   const LeagueContractFactory = (await ethers.getContractFactory(
-    "contracts/Matchmaker.sol:League",
+    "contracts/League.sol:League",
     owner
   )) as League__factory;
 
